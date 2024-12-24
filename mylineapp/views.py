@@ -30,15 +30,51 @@ def callback(request):
 
         for event in events:
 
-            # 若有訊息事件
+           # 若有訊息事件
             if isinstance(event, MessageEvent):
 
-                currentDateAndTime = datetime.now()
-                currentTime = currentDateAndTime.strftime("%H:%M:%S")
+                txtmsg = event.message.text
 
-                txtmsg = "您所傳的訊是:\n"
-                txtmsg += currentTime + "\n"
-                txtmsg += event.message.text
+                if txtmsg in ["你好", "Hello", "早安", "Hi"]:
+                    
+                    stkpkg, stkid = 1070, 17840
+                    replymsg = "你好, 請問需要為你做什麼?"
+
+                    line_bot_api.reply_message(
+                    event.reply_token,
+                    [StickerSendMessage(package_id = stkpkg, sticker_id=stkid),
+                     TextSendMessage( text = replymsg )])
+
+                elif txtmsg in ["龍山寺求籤","求籤","龍山寺拜拜"]:
+
+                    num = random.choice(range(1,101))
+                    imgurl = f"https://www.lungshan.org.tw/fortune_sticks/images/{num:0>3d}.jpg"
+
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        ImageSendMessage(original_content_url=imgurl,
+                        preview_image_url=imgurl))
+
+                elif txtmsg == "淺草寺求籤":
+                    num = random.choice(range(1,101))
+                    imgurl1 = f"https://qiangua.temple01.com/images/qianshi/fs_akt100/{num}.jpg"
+                    imgurl2 = f"https://qiangua.temple01.com/images/qianshi/fs_akt100/back/{num}.jpg" 
+
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        [ImageSendMessage(original_content_url=imgurl1,
+                        preview_image_url=imgurl1),
+                        ImageSendMessage(original_content_url=imgurl2,
+                        preview_image_url=imgurl2)])
+
+                 else:
+
+                    replymsg = "你所傳的訊息是:\n" + txtmsg
+
+                    # 回傳收到的文字訊息
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage( text = replymsg ))
 
                 # 回傳收到的文字訊息
                 line_bot_api.reply_message(
