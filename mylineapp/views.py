@@ -69,7 +69,8 @@ def callback(request):
 
                  else:
 
-
+                replymsg = "你所傳的訊息是:\n" + txtmsg
+                
                 # 回傳收到的文字訊息
                 line_bot_api.reply_message(
                     event.reply_token,
