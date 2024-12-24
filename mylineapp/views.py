@@ -8,12 +8,13 @@ from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage, StickerSendMessage, ImageSendMessage, LocationSendMessage
 
 from datetime import datetime
+import random
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 
 def index(request):
-    return HttpResponse("Hello World")
+    return HttpResponse("阿母,我成功了~~!")
 
 @csrf_exempt
 def callback(request):
@@ -30,7 +31,7 @@ def callback(request):
 
         for event in events:
 
-           # 若有訊息事件
+            # 若有訊息事件
             if isinstance(event, MessageEvent):
 
                 txtmsg = event.message.text
@@ -44,6 +45,42 @@ def callback(request):
                     event.reply_token,
                     [StickerSendMessage(package_id = stkpkg, sticker_id=stkid),
                      TextSendMessage( text = replymsg )])
+
+                elif txtmsg == "今天誰最帥":
+                    names = ['1113212047 (曾宏仁)', '1112204048 (林宗諺)','1113211030 (黃冠森)',
+                            '1113211006 (陳有信)','1110304012 (林彥庭)']
+                    replymsg = "今天最帥的是:" + random.choice(names)
+
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage( text = replymsg ))
+
+                elif txtmsg == "今天誰最美":
+                    names = ['1111211008 (呂婕瑀)','1112211014 (蘇育卉)','1109302041 (李俞廷)',
+                            '1109302049 (陳禹彤)','1112211042 (潘欣慧)','1110302034 (王新霏)',
+                            '1110302038 (林潁俞)','1109300092 (潘妍華)','1112224017 (郭季惠)',
+                            '1109302030 (黃雅旋)','1111211010 (褚芸榕)','1112203020 (陳瑪莘)',
+                            '1112200110 (蘇怡嘉)','1110210048 (苗琇雯)']
+
+                    replymsg = "今天最美的是:" + random.choice(names)
+
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage( text = replymsg ))
+
+                elif txtmsg.startswith("今天誰最"):
+                    names = ['1113212047 (曾宏仁)', '1112204048 (林宗諺)','1113211030 (黃冠森)',
+                            '1113211006 (陳有信)','1110304012 (林彥庭)','1111211008 (呂婕瑀)','1112211014 (蘇育卉)','1109302041 (李俞廷)',
+                            '1109302049 (陳禹彤)','1112211042 (潘欣慧)','1110302034 (王新霏)',
+                            '1110302038 (林潁俞)','1109300092 (潘妍華)','1112224017 (郭季惠)',
+                            '1109302030 (黃雅旋)','1111211010 (褚芸榕)','1112203020 (陳瑪莘)',
+                            '1112200110 (蘇怡嘉)','1110210048 (苗琇雯)']
+
+                    replymsg = "今天最" + txtmsg[4:] +"的是:"+ random.choice(names)
+
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage( text = replymsg ))
 
                 elif txtmsg in ["龍山寺求籤","求籤","龍山寺拜拜"]:
 
@@ -67,23 +104,16 @@ def callback(request):
                         ImageSendMessage(original_content_url=imgurl2,
                         preview_image_url=imgurl2)])
 
-                 else:
+                else:
 
-                replymsg = "你所傳的訊息是:\n" + txtmsg
-                
-                # 回傳收到的文字訊息
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    [TextSendMessage( text = txtmsg ),
+                    replymsg = "你所傳的訊息是:\n" + txtmsg
+
+                    # 回傳收到的文字訊息
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage( text = replymsg ))
                      
-                     StickerSendMessage(package_id=1070, sticker_id=17840),
                      
-                     ImageSendMessage(original_content_url='https://ws.taipei-101.com.tw/upload/firework/20220105/ada6f07c3d244c4f80e0f231be729313/ada6f07c3d244c4f80e0f231be729313.jpg', preview_image_url='https://ws.taipei-101.com.tw/upload/firework/20220105/ada6f07c3d244c4f80e0f231be729313/ada6f07c3d244c4f80e0f231be729313.jpg'),
-
-                    LocationSendMessage(title='台北101', address='Taipei', latitude=25.033976,longitude=121.564539)
-                    ])
-
-
 
         return HttpResponse()
     else:
