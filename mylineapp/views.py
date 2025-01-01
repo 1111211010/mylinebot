@@ -188,11 +188,7 @@ def callback(request):
                     # 回傳收到的文字訊息
                     line_bot_api.reply_message(
                         event.reply_token,
-                        TextSendMessage( text = replymsg ),
-                        
-                        ImageSendMessage(original_content_url='https://ws.taipei-101.com.tw/upload/firework/20220105/ada6f07c3d244c4f80e0f231be729313/ada6f07c3d244c4f80e0f231be729313.jpg',
-                        preview_image_url='https://ws.taipei-101.com.tw/upload/firework/20220105/ada6f07c3d244c4f80e0f231be729313/ada6f07c3d244c4f80e0f231be729313.jpg')
-                    )
+                        TextSendMessage( text = replymsg ) )
                     
                         
                     
