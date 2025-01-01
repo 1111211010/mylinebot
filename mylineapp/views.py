@@ -20,35 +20,29 @@ def index(request):
     return HttpResponse("嗨嚕(❁´◡`❁)")
 
 # 劍橋字典
-def fetch_cambridge_definition(word):
-    url = f"https://dictionary.cambridge.org/dictionary/english/{word}"
+def fetch_chinese_translation(word):
+    url = f"https://dictionary.cambridge.org/dictionary/english-chinese-traditional/{word}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
     }
     
     try:
-        # 發送 HTTP GET 請求
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # 確保請求成功
+        response.raise_for_status()
         
-        # 解析 HTML
         soup = BeautifulSoup(response.text, "html.parser")
         
-        # 查找定義部分
-        definitions = soup.find_all("div", class_="def ddef_d db")
+        # 查找中文翻譯
+        translations = soup.find_all("span", class_="trans dtrans dtrans-se break-cj")
+        if not translations:
+            return f"找不到單字 '{word}' 的中文翻譯，請確認拼寫是否正確。"
         
-        if not definitions:
-            return f"無法找到單字 '{word}' 的定義。請確認拼寫是否正確。"
-        
-        # 提取定義內容
-        result = f"劍橋字典中的 '{word}' 定義：\n"
-        for i, definition in enumerate(definitions, 1):
-            result += f"{i}. {definition.text.strip()}\n"
-        
-        return result
+        # 提取翻譯內容
+        chinese_translation = translations[0].text.strip()
+        return f"單字 '{word}' 的中文翻譯為：{chinese_translation}"
     
     except requests.RequestException as e:
-        return f"無法連接至劍橋字典網站。錯誤：{e}"
+        return f"無法連接至劍橋字典網站，請稍後再試。錯誤：{e}"
     except Exception as e:
         return f"發生錯誤：{e}"
 
@@ -199,7 +193,7 @@ def callback(request):
                         TextSendMessage( text = replymsg ))
 
                 elif txtmsg == "劍橋字典":
-                    replymsg = fetch_cambridge_definition()
+                    reply = fetch_chinese_translation(user_message)
                     line_bot_api.reply_message(
                         event.reply_token,
                         TextSendMessage( text = replymsg ))
