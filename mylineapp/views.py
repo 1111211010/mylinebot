@@ -19,32 +19,6 @@ parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 def index(request):
     return HttpResponse("嗨嚕(❁´◡`❁)")
 
-# 劍橋字典
-def fetch_chinese_translation(word):
-    url = f"https://dictionary.cambridge.org/dictionary/english-chinese-traditional/{word}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
-    }
-    
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.text, "html.parser")
-        
-        # 查找中文翻譯
-        translations = soup.find_all("span", class_="trans dtrans dtrans-se break-cj")
-        if not translations:
-            return f"找不到單字 '{word}' 的中文翻譯，請確認拼寫是否正確。"
-        
-        # 提取翻譯內容
-        chinese_translation = translations[0].text.strip()
-        return f"單字 '{word}' 的中文翻譯為：{chinese_translation}"
-    
-    except requests.RequestException as e:
-        return f"無法連接至劍橋字典網站，請稍後再試。錯誤：{e}"
-    except Exception as e:
-        return f"發生錯誤：{e}"
 
 # 擷取統一發票
 def invoice():
@@ -188,12 +162,6 @@ def callback(request):
 
                 elif txtmsg == "最新消息":
                     replymsg = cna_news()
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage( text = replymsg ))
-
-                elif txtmsg == "劍橋字典":
-                    reply = fetch_chinese_translation(user_message)
                     line_bot_api.reply_message(
                         event.reply_token,
                         TextSendMessage( text = replymsg ))
