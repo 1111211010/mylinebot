@@ -95,6 +95,21 @@ def callback(request):
                     [StickerSendMessage(package_id = stkpkg, sticker_id=stkid),
                      TextSendMessage( text = replymsg )])
 
+                     # 幸運色
+                    elif txtmsg == "今天幸運色":
+                    names = ["紅色", "橙色", "黃色", "綠色", "藍色", "紫色", "粉紅色", "白色", "黑色", 
+                            "金色", "銀色", "灰色", "棕色", "青色", "靛色","玫瑰金", "珍珠白", "翡翠綠", "寶石藍", "琥珀黃", 
+                            "薰衣草紫", "珊瑚橙", "冰川藍", "橄欖綠", "炭灰黑","亮紅色", "深藍色", "奶油色", "象牙白", "茄紫色", 
+                            "薄荷綠", "鴨蛋藍", "玫瑰粉", "霞光橙", "深棕色","孔雀藍", "芥末黃", "靜夜黑", "晨曦白", "秋葉紅", 
+                             "日落橙", "星辰銀", "蜜桃粉", "翡冷翠", "極光綠" ]
+
+                    replymsg = "今天幸運色是:" + random.choice(names)
+
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage( text = replymsg ))
+                
+
                 elif txtmsg == "今天誰最帥":
                     names = ['1113212047 (曾宏仁)', '1112204048 (林宗諺)','1113211030 (黃冠森)',
                             '1113211006 (陳有信)','1110304012 (林彥庭)']
